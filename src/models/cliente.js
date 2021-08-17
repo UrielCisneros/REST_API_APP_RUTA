@@ -5,7 +5,16 @@ const clienteSchema = new Schema(
     {
         nombre: String,
         zona: String,
-        domicilio: String,
+        direccion: {
+            calle: String,
+            numero: {
+                interior: String,
+                exterior: String
+            },
+            colonia: String,
+            ciudad: String,
+            codigo_postal: String
+        },
         telefono: String,
         imagenes: {
             ine: {
@@ -23,7 +32,11 @@ const clienteSchema = new Schema(
                 url: String
             }
         },
-        status_buro: Boolean
+        status_buro: Boolean,
+        id_empresa: {
+            type: Schema.ObjectId,
+            ref:'empresas'
+        }
     },{
         timestamps: true
     }
