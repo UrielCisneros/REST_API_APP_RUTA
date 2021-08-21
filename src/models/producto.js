@@ -6,7 +6,22 @@ const SchemaProducto = new Schema(
     {
         codigo_barras: String,
         descripcion: String,
-        costo: Float,
+        precios: [
+            {
+                numero_precio: Number,
+                precio_neto: Float,
+                precio_venta: Float,
+                unidad_mayoreo: Number,
+                utilidad: Float,
+                unitario: Boolean
+            }
+        ],
+        precios_plazos:[
+            {
+                plazo: String,
+                precio: Float	
+            }
+        ],
         contado: Float,
         id_empresa: {
             type: Schema.ObjectId,

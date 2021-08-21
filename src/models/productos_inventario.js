@@ -9,11 +9,11 @@ const SchemaInventario = new Schema(
         },
         id_producto: {
             type: Schema.ObjectId,
-            ref:'empresas'
+            ref:'productos'
         },
         id_almacen: {
             type: Schema.ObjectId,
-            ref:'empresas'
+            ref:'almacenes'
         },
         cantidad: Number
     },

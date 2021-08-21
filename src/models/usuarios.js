@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema, model} = mongoose;
-
-const clienteSchema = new Schema(
+const Usuarios = new Schema(
     {
         nombre: String,
         zona: String,
@@ -36,10 +35,22 @@ const clienteSchema = new Schema(
         id_empresa: {
             type: Schema.ObjectId,
             ref:'empresas'
-        }
+        },
+        tipo: String,
+        tipo_acceso: String,
+        precio_predeterminado: {
+            numero_precio: Number,
+            precio_neto: Float,
+            precio_venta: Float,
+            unidad_mayoreo: Number,
+            utilidad: Float,
+            unitario: Boolean
+        },
+        saldo: Float,
+        saldo_en_uso: FLoat
     },{
         timestamps: true
     }
 );
 
-module.exports = model('clientes',clienteSchema);
+module.exports = model('usuarios',Usuarios);
