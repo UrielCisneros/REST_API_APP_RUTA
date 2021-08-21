@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const SchemaAlmacen = new Schema(
+const SchemaCompras = new Schema(
     {
         fecha: Date,
         proveedor: {
@@ -37,4 +37,4 @@ const SchemaAlmacen = new Schema(
     }
 );
 
-module.exports = model("almacenes",SchemaAlmacen);
+module.exports = model("compras",SchemaCompras);

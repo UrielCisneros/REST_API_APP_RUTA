@@ -47,7 +47,8 @@ const Usuarios = new Schema(
             unitario: Boolean
         },
         saldo: Float,
-        saldo_en_uso: FLoat
+        saldo_en_uso: FLoat,
+        correo_electronico: String
     },{
         timestamps: true
     }

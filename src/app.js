@@ -11,8 +11,14 @@ app.use(express.json());
 
 const v_api = '/api/v-1';
 
-app.use(`${v_api}`, require("./routes/cliente"));
-// app.use(`${v_api}/producto`, require("./routes/producto"));
-// app.use(`${v_api}/usuario`, require("./routes/usuario"));
+app.use(`${v_api}/almacenes`, require("./routes/almacenes.routes"));
+app.use(`${v_api}/compras`, require("./routes/compras.routes"));
+app.use(`${v_api}/empresas`, require("./routes/empresas.routes"));
+app.use(`${v_api}/pago-comiciones`, require("./routes/pago_comisiones.routes"));
+app.use(`${v_api}/productos`, require("./routes/productos.routes"));
+app.use(`${v_api}/proveedores`, require("./routes/proveedor.routes"));
+app.use(`${v_api}/traspasos`, require("./routes/traspasos.routes"));
+app.use(`${v_api}/usuarios`, require("./routes/usuarios.routes"));
+app.use(`${v_api}/ventas`, require("./routes/ventas.routes"));
 
 module.exports = app;

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 var Float = require('mongoose-float').loadType(mongoose,4);
 const { Schema, model } = mongoose;
 
-const SchemaAlmacen = new Schema(
+const SchemaComociones = new Schema(
     {
         fecha: Date,
         usuario: {
@@ -17,4 +17,4 @@ const SchemaAlmacen = new Schema(
     }
 );
 
-module.exports = model("almacenes",SchemaAlmacen);
+module.exports = model("pagocomiciones",SchemaComociones);

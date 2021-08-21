@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const SchemaAlmacen = new Schema(
+const SchemaTraspasos = new Schema(
     {
         fecha: Date,
         hora: String,
@@ -53,4 +53,4 @@ const SchemaAlmacen = new Schema(
     }
 );
 
-module.exports = model("almacenes",SchemaAlmacen);
+module.exports = model("traspasos",SchemaTraspasos);
