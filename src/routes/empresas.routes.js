@@ -1,8 +1,10 @@
 const { Router } = require('express');
 const router = Router();
 
-const { getEmpresas } = require('../controllers/empresa.controllers');
+const { getEmpresas, createEmpresa } = require('../controllers/empresa.controllers');
 
-router.route('/').get(getEmpresas);
+router.route('/obtener').get(getEmpresas);
+
+router.route('/registrar').post(createEmpresa);
 
 module.exports = router;

@@ -25,7 +25,10 @@ const EmpresaSchema = new Schema({
     },
     password: String,
     paquete: String,
-    fecha_vencimiento: String
+    fecha_vencimiento: String,
+    fecha_subscripcion: String,
+    numero_mes_subscripcion: Number,
+    numero_mes_vencimiento: Number
 },{
     timestamps: true
 })
