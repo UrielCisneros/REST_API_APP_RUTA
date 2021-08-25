@@ -20,5 +20,6 @@ app.use(`${v_api}/proveedores`, require("./routes/proveedor.routes"));
 app.use(`${v_api}/traspasos`, require("./routes/traspasos.routes"));
 app.use(`${v_api}/usuarios`, require("./routes/usuarios.routes"));
 app.use(`${v_api}/ventas`, require("./routes/ventas.routes"));
+app.use(`${v_api}/login`, require("./routes/login.routes"));
 
 module.exports = app;

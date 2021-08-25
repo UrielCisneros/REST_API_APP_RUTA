@@ -2,6 +2,7 @@ const empresaCtrl = {};
 const moment = require('moment');
 const EmpresaModel = require('../models/empresa');
 const bcrypt = require('bcrypt-nodejs');
+const SucursalModel = require('../models/sucursal');
 
 
 empresaCtrl.getEmpresas = async (req,res) => {
@@ -50,7 +51,16 @@ empresaCtrl.createEmpresa = async (req,res) => {
                 numero_mes_subscripcion: hoy.week(),
                 numero_mes_vencimiento: vencimiento.week()
             });
+            const newSucursal = new SucursalModel({
+                nombre_sucursal: nombre_empresa,
+                sucursal_principal: true,
+                password_sucursal: hash,
+                usuario_ingreso: "12345",
+                direccion,
+                id_empresa: newEmpresa._id
+            });
             await newEmpresa.save();
+            await newSucursal.save();
             res.status(200).json({message: "Empresa registrada exitosamente."});
         });
 
