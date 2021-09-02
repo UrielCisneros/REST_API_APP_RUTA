@@ -11,6 +11,7 @@
   "author": "Uriel Cisneros Torres",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.981.0",
     "bcrypt": "^5.0.1",
     "bcrypt-nodejs": "0.0.3",
     "cors": "^2.8.5",
@@ -20,6 +21,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.13.7",
     "mongoose-float": "^1.0.4",
+    "multer": "^1.4.3",
     "multer-s3": "^2.9.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.12"

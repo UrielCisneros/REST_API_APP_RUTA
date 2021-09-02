@@ -18,14 +18,13 @@ usuariosCtrl.createUsuario = async (req,res) => {
             correo,
             nombre,
             telefono,
-            empresa,
             tipo_acceso,
             password, 
             repeatPassword, 
         } = req.body;
 
         const correo_limpio = correo.trim();
-        if(!correo_limpio || !nombre || !telefono || !empresa || !tipo_acceso || !password || !repeatPassword || password !== repeatPassword) { 
+        if(!correo_limpio || !nombre || !telefono || !tipo_acceso || !password || !repeatPassword || password !== repeatPassword) { 
             res.status(500).json({message: "Datos incompletos."});
             return;
         }
@@ -35,7 +34,7 @@ usuariosCtrl.createUsuario = async (req,res) => {
                 correo: correo_limpio,
                 nombre,
                 telefono,
-                empresa,
+                empresa: req.params.idEmpresa,
                 tipo_acceso,
                 password: hash
             });

@@ -39,10 +39,8 @@ const SchemaProducto = new Schema(
         },
         imagenes: [
 			{
-				url_imagen: String,
-				location_imagen: String,
 				key_imagen: String,
-				extencion_imagen: String
+				location_imagen: String
 			}
 		],
         precios_plazos:[
@@ -53,6 +51,7 @@ const SchemaProducto = new Schema(
         ],
         fecha_creacion: String,
         numero_mes_creacion: Number,
+        year_de_creacion: Number,
         id_empresa: {
             type: Schema.ObjectId,
             ref:'empresas'

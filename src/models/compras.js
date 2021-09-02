@@ -13,23 +13,13 @@ const SchemaCompras = new Schema(
                 ref:'proveedores'
             },
         },
-        almcane_destino: {
+        almacen_destino: {
             id: {
                 type: Schema.ObjectId,
                 ref:'almacenes'
             },
             nombre: String
         },
-        productos: [
-            {
-                id: {
-                    type: Schema.ObjectId,
-                    ref:'productos'
-                },
-                codigo_barras: String,
-                descripcion: String,
-            }
-        ],
         observaciones: String
     },
     {
