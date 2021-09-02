@@ -22,12 +22,12 @@ productoCtrl.createProducto = async (req,res) => {
             id_sucursal
         } = req.body;
         //TODO: Condicionar los datos obligatorios
-
-
-
-        //TODO: Subir las imagenes
-        const imagenesFinal = [];
-
+        if(
+			!precios.unidad_de_compra.unidad ||
+			!precios.unidad_de_compra.cantidad ||
+			!precios.unidad_de_compra.precio_unitario_sin_impuesto ||
+			!precios.unidad_de_compra.precio_unitario_con_impuesto
+		) throw new Error("Datos incompletos.");
         //Generar fecha
         const hoy = moment();
         //Armar array de producto
@@ -36,7 +36,6 @@ productoCtrl.createProducto = async (req,res) => {
                 datos_generales,
                 precios,
                 precios_plazos,
-                imagenes: imagenesFinal,
                 contado,
                 id_empresa,
                 id_sucursal,
@@ -53,7 +52,7 @@ productoCtrl.createProducto = async (req,res) => {
     }
 }
 
-productoCtrl.updateProducto = (req,res) => {
+productoCtrl.updateProducto = async (req,res) => {
     try{
 
     }catch(error){

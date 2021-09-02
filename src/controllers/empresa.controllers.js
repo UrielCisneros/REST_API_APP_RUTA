@@ -30,8 +30,8 @@ empresaCtrl.createEmpresa = async (req,res) => {
         const hoy = moment();
         let vencimiento = '';
         if(!password || !repeatPassword || password !== repeatPassword) res.status(404).json({message: "Algo salio mal, verificar los campos."});
-        bcrypt.hash(password, null, null,async (err,hash) => {
-            if(err) res.status(500).json({ message: "Error al encriptar la contrasena", err });
+        bcrypt.hash(password, null, null, async (err,hash) => {
+            if(err) res.status(500).json({ message: "Ocurrio un error", err });
             switch(paquete){
                 case 1:
                     vencimiento = hoy.clone().add(1,'M');

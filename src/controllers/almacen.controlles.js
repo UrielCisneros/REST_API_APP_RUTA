@@ -1,6 +1,6 @@
 const almacenCtrl = {};
 
-almacenCtrl.getAlmacenes = (req,res) => {
+almacenCtrl.getAlmacenes = async (req,res) => {
     try {
         console.log('Almacen');
         res.status(200).json({message: "Hecho"});

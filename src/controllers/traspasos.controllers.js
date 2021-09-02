@@ -1,6 +1,6 @@
 const traspasosCtrl = {};
 
-traspasosCtrl.getTraspasos = (req,res) => {
+traspasosCtrl.getTraspasos = async (req,res) => {
     try {
         console.log('Traspasos');
         res.status(200).json({message: "Hecho"});

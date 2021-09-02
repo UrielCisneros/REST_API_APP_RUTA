@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+var Float = require('mongoose-float').loadType(mongoose,4);
 const {Schema, model} = mongoose;
-const Usuarios = new Schema(
+
+const UsuariosSchema = new Schema(
     {
         nombre: String,
         zona: String,
@@ -32,7 +34,7 @@ const Usuarios = new Schema(
             }
         },
         status_buro: Boolean,
-        id_empresa: {
+        empresa: {
             type: Schema.ObjectId,
             ref:'empresas'
         },
@@ -47,11 +49,16 @@ const Usuarios = new Schema(
             unitario: Boolean
         },
         saldo: Float,
-        saldo_en_uso: FLoat,
-        correo_electronico: String
+        saldo_en_uso: Float,
+        correo: {
+            type: String,
+            unique: true,
+            trim: true
+        },
+        password: String
     },{
         timestamps: true
     }
 );
 
-module.exports = model('usuarios',Usuarios);
+module.exports = model('usuarios',UsuariosSchema);

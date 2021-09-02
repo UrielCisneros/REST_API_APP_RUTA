@@ -1,6 +1,6 @@
 const ventasCtrl = {};
 
-ventasCtrl.getVentas = (req,res) => {
+ventasCtrl.getVentas = async (req,res) => {
     try {
         console.log('Ventas');
         res.status(200).json({message: "Hecho"});

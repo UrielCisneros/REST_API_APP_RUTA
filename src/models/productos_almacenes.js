@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 var Float = require('mongoose-float').loadType(mongoose,4);
-const { Schema, model } = mongoose;
+const {Schema, model} = mongoose;
 
-const SchemaProducto = new Schema(
+const ProductoAlmacenSchema = new Schema(
     {
         datos_generales: {
             codigo_barras: String,
@@ -37,35 +37,32 @@ const SchemaProducto = new Schema(
 			},
             granel: Boolean
         },
-        imagenes: [
-			{
-				url_imagen: String,
-				location_imagen: String,
-				key_imagen: String,
-				extencion_imagen: String
-			}
-		],
-        precios_plazos:[
-            {
-                plazo: String,
-                precio: Float	
-            }
-        ],
-        fecha_creacion: String,
-        numero_mes_creacion: Number,
-        id_empresa: {
-            type: Schema.ObjectId,
-            ref:'empresas'
-        },
-        id_sucursal: {
+        cantidad_agregada: Float,
+        cantidad_existente: Float,
+        empresa: {
             type: Schema.Types.ObjectId,
-            ref: "sucursales",
+            require: true,
+            ref: "Empresa",
             trim: true,
         },
-    },
-    {
+        sucursal: {
+            type: Schema.Types.ObjectId,
+            ref: "Sucursal",
+            trim: true,
+        },
+        id_almacen: {
+            type: Schema.Types.ObjectId,
+            ref: "Usuarios",
+            trim: true, 
+        },
+        id_compra: {
+            type: Schema.Types.ObjectId,
+            ref: "Usuarios",
+            trim: true, 
+        }
+    },{
         timestamps: true
     }
 );
 
-module.exports = model("productos",SchemaProducto);
+module.exports = model('productoalmacenes',ProductoAlmacenSchema);

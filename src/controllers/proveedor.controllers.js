@@ -1,6 +1,6 @@
 const proveedorCtrl = {};
 
-proveedorCtrl.getProveedores = (req,res) => {
+proveedorCtrl.getProveedores = async (req,res) => {
     try {
         console.log('Proveedores');
         res.status(200).json({message: "Hecho"});
