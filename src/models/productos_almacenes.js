@@ -39,25 +39,36 @@ const ProductoAlmacenSchema = new Schema(
         },
         cantidad_agregada: Float,
         cantidad_existente: Float,
+        unidad_inventario: String,
+        cantidad_existente_minima: Float,
+        unidad_minima: String,
+        cantidad_existente_maxima: Float,
+        unidad_maxima: String,
+        producto: {
+            type: Schema.Types.ObjectId,
+            require: true,
+            ref: "productos",
+            trim: true,
+        },
         empresa: {
             type: Schema.Types.ObjectId,
             require: true,
-            ref: "Empresa",
+            ref: "empresas",
             trim: true,
         },
         sucursal: {
             type: Schema.Types.ObjectId,
-            ref: "Sucursal",
+            ref: "sucursales",
             trim: true,
         },
         id_almacen: {
             type: Schema.Types.ObjectId,
-            ref: "Usuarios",
+            ref: "almacenes",
             trim: true, 
         },
         id_compra: {
             type: Schema.Types.ObjectId,
-            ref: "Usuarios",
+            ref: "usuarios",
             trim: true, 
         }
     },{

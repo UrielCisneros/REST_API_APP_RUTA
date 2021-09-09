@@ -61,6 +61,7 @@ const SchemaProducto = new Schema(
             ref: "sucursales",
             trim: true,
         },
+        eliminado: Boolean
     },
     {
         timestamps: true

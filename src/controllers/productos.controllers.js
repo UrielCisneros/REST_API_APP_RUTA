@@ -2,6 +2,8 @@ const productoCtrl = {};
 const ProductoModel = require('../models/producto');
 const moment = require("moment");
 const uploadFile = require("../middleware/uploadFile");
+const AlmacenProductoModel = require("../models/productos_almacenes");
+const SucursalModel = require('../models/sucursal');
 
 productoCtrl.uploadFileAwsS3 = (req, res, next) => {
 	uploadFile.upload(req, res, function (err) {
@@ -15,7 +17,42 @@ productoCtrl.uploadFileAwsS3 = (req, res, next) => {
 
 productoCtrl.getProductosEmpresa = async (req,res) => {
     try {
-        const productoEmpresas = await ProductoModel.find().where({id_empresa: req.params.idEmpresa})
+        const filtro = req.params.filtro;
+        let filtroMatch = {};
+        const sucursalEmpresa = await SucursalModel.findOne().where({id_empresa: req.params.idEmpresa, sucursal_principal: true });
+        if(filtro){
+            filtro_match = 
+			{
+				$match: {
+					$or: [
+						{ 'datos_generales.codigo_barras': { $regex: '.*' + filtro + '.*', $options: 'i' } },
+						{ 'datos_generales.descripcion': { $regex: '.*' + filtro + '.*', $options: 'i' } }
+					],
+					$and: [ 
+						{id_empresa: req.params.idEmpresa},
+						{id_sucursal: sucursalEmpresa._id},
+						{eliminado: false}
+					],
+					
+				}
+			};
+        }else{
+            filtro_match = 
+			{
+				$match: {
+					id_empresa: req.params.idEmpresa,
+					id_sucursal: sucursalEmpresa._id,
+                    eliminado: false
+				}
+			};
+        }
+        const productosEmpresas = await ProductoModel.aggregate(
+            [
+
+            ]
+        );
+
+        // const productoEmpresas = await ProductoModel.find().where({id_empresa: req.params.idEmpresa})   
         res.status(200).json(productoEmpresas);
     } catch (error) {
         
@@ -50,6 +87,7 @@ productoCtrl.createProducto = async (req,res) => {
                 fecha_creacion: hoy,
                 year_de_creacion:hoy.year(),
                 numero_mes_creacion: hoy.week(),
+                eliminado: false
             }
         );
         //guardar producto
@@ -100,7 +138,7 @@ productoCtrl.deleteImagenProducto = async (req,res) => {
             await ProductoModel.updateOne(
                 {
                     _id: req.params.idProducto
-                },
+                }, 
                 {
                     $pull: {
                         imagenes: {
@@ -119,7 +157,10 @@ productoCtrl.deleteImagenProducto = async (req,res) => {
 
 productoCtrl.updateProducto = async (req,res) => {
     try{
-
+        const idProducto = req.params.idProducto;
+        const productoUpdate = req.body;
+        await ProductoModel.findByIdAndUpdate(idProducto, productoUpdate);
+        res.status(200).json({message: "Producto agregado"});
     }catch(error){
         console.log(error);
         res.status(500).json({message: "Error de registro", error});
@@ -130,6 +171,29 @@ productoCtrl.getProductosGenerales = async (req,res) => {
     try {
         console.log('Productos inventario');
         res.status(200).json({message: "Hecho"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+productoCtrl.deleteProducto = async (req,res) => {
+    try {
+        const idProducto = req.params.idProducto;
+        const productosAlmacenes = await AlmacenProductoModel.find().where({
+            producto: idProducto
+        });
+        if(productosAlmacenes){
+            if(productosAlmacenes.cantidad_existente > 0){
+                res.status(500).json({ message: "No puede eliminar, aun hay productos en almacenes" });
+            }else{
+                await ProductoModel.findByIdAndUpdate(idProducto,{eliminado: true});
+                res.status(200).json({message: "Producto eliminado"});
+            }
+        }else{
+            await ProductoModel.findByIdAndUpdate(idProducto,{eliminado: true});
+            res.status(200).json({message: "Producto eliminado"});
+        }
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});
