@@ -48,7 +48,34 @@ productoCtrl.getProductosEmpresa = async (req,res) => {
         }
         const productosEmpresas = await ProductoModel.aggregate(
             [
-
+                filtro_match,
+                {
+                    $lookup: {
+                      from: "productoalmacens",
+                      let: { id: "$_id", empresa: `${req.params.idEmpresa}`, sucursal: `${sucursalEmpresa._id}`, almacen: `${almacenSucursal._id}` },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $and: [
+                                { $eq: ["$producto._id", { $toObjectId: "$$id" }] },
+                                { $eq: ["$empresa", { $toObjectId: "$$empresa" }] },
+                                { $eq: ["$sucursal", { $toObjectId: "$$sucursal" }] },
+                                { $eq: ["$id_almacen", { $toObjectId: "$$almacen" }] },
+                              ],
+                            },
+                          },
+                        },
+                        {
+                            $group: { 
+                                _id: "$producto._id", 
+                                cantidad_existente: { $sum: '$cantidad_existente' }
+                            } 
+                        }
+                      ],
+                      as: "inventario_general",
+                    },
+                },
             ]
         );
 
