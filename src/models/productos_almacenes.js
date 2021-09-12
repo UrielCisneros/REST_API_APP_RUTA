@@ -37,7 +37,6 @@ const ProductoAlmacenSchema = new Schema(
 			},
             granel: Boolean
         },
-        cantidad_agregada: Float,
         cantidad_existente: Float,
         unidad_inventario: String,
         cantidad_existente_minima: Float,

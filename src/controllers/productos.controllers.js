@@ -4,6 +4,7 @@ const moment = require("moment");
 const uploadFile = require("../middleware/uploadFile");
 const AlmacenProductoModel = require("../models/productos_almacenes");
 const SucursalModel = require('../models/sucursal');
+const AlmacenModel = require('../models/almacen');
 
 productoCtrl.uploadFileAwsS3 = (req, res, next) => {
 	uploadFile.upload(req, res, function (err) {
@@ -17,11 +18,12 @@ productoCtrl.uploadFileAwsS3 = (req, res, next) => {
 
 productoCtrl.getProductosEmpresa = async (req,res) => {
     try {
-        const filtro = req.params.filtro;
+        const filtro = req.query;
         let filtroMatch = {};
         const sucursalEmpresa = await SucursalModel.findOne().where({id_empresa: req.params.idEmpresa, sucursal_principal: true });
+        const almacenPrincipal = await AlmacenModel.findOne().where({id_empresa: req.params.idEmpresa, id_sucursal: sucursalEmpresa._id, inicial: true});
         if(filtro){
-            filtro_match = 
+            filtroMatch = 
 			{
 				$match: {
 					$or: [
@@ -37,7 +39,7 @@ productoCtrl.getProductosEmpresa = async (req,res) => {
 				}
 			};
         }else{
-            filtro_match = 
+            filtroMatch = 
 			{
 				$match: {
 					id_empresa: req.params.idEmpresa,
@@ -48,17 +50,17 @@ productoCtrl.getProductosEmpresa = async (req,res) => {
         }
         const productosEmpresas = await ProductoModel.aggregate(
             [
-                filtro_match,
+                filtroMatch,
                 {
                     $lookup: {
-                      from: "productoalmacens",
-                      let: { id: "$_id", empresa: `${req.params.idEmpresa}`, sucursal: `${sucursalEmpresa._id}`, almacen: `${almacenSucursal._id}` },
+                      from: "productoalmacenes",
+                      let: { id: "$_id", empresa: `${req.params.idEmpresa}`, sucursal: `${sucursalEmpresa._id}`, almacen: `${almacenPrincipal._id}` },
                       pipeline: [
                         {
                           $match: {
                             $expr: {
                               $and: [
-                                { $eq: ["$producto._id", { $toObjectId: "$$id" }] },
+                                { $eq: ["$producto", { $toObjectId: "$$id" }] },
                                 { $eq: ["$empresa", { $toObjectId: "$$empresa" }] },
                                 { $eq: ["$sucursal", { $toObjectId: "$$sucursal" }] },
                                 { $eq: ["$id_almacen", { $toObjectId: "$$almacen" }] },
@@ -68,21 +70,25 @@ productoCtrl.getProductosEmpresa = async (req,res) => {
                         },
                         {
                             $group: { 
-                                _id: "$producto._id", 
-                                cantidad_existente: { $sum: '$cantidad_existente' }
+                                _id: "$producto", 
+                                cantidad_existente: { $first: '$cantidad_existente' },
+                                unidad_inventario: { $first: '$unidad_inventario' },
+                                cantidad_existente_minima: { $first: '$cantidad_existente_minima' },
+                                unidad_minima: { $first: '$unidad_minima' },
+                                cantidad_existente_maxima: { $first: '$cantidad_existente_maxima' },
+                                unidad_maxima: { $first: '$unidad_maxima' }
                             } 
                         }
                       ],
-                      as: "inventario_general",
+                      as: "inventario_sucursal",
                     },
                 },
             ]
         );
-
-        // const productoEmpresas = await ProductoModel.find().where({id_empresa: req.params.idEmpresa})   
-        res.status(200).json(productoEmpresas);
+        res.status(200).json(productosEmpresas);
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
     }
 }
 
@@ -113,7 +119,7 @@ productoCtrl.createProducto = async (req,res) => {
                 id_sucursal: req.params.idSucursal,
                 fecha_creacion: hoy,
                 year_de_creacion:hoy.year(),
-                numero_mes_creacion: hoy.week(),
+                numero_mes_year_creacion: hoy.week(),
                 eliminado: false
             }
         );

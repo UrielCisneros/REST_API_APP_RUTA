@@ -3,6 +3,7 @@ const moment = require('moment');
 const EmpresaModel = require('../models/empresa');
 const bcrypt = require('bcrypt-nodejs');
 const SucursalModel = require('../models/sucursal');
+const AlmacenModel = require('../models/almacen');
 
 
 empresaCtrl.getEmpresas = async (req,res) => {
@@ -59,11 +60,18 @@ empresaCtrl.createEmpresa = async (req,res) => {
                 direccion,
                 id_empresa: newEmpresa._id
             });
+            const almacenPrincipal = new AlmacenModel({
+                nombre_almacen: "Almacen inicial",
+                id_empresa: newEmpresa._id,
+                id_sucursal: newSucursal._id,
+                inicial: true,
+                concepto: 'Inicial'
+            });
             await newEmpresa.save();
             await newSucursal.save();
+            await almacenPrincipal.save();
             res.status(200).json({message: "Empresa registrada exitosamente."});
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});

@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
+var Float = require('mongoose-float').loadType(mongoose,4);
 const { Schema, model } = mongoose;
 
 const SchemaTraspasos = new Schema(
     {
-        fecha: Date,
-        hora: String,
         usuario: {
             id: {
                 type: Schema.ObjectId,
@@ -23,7 +22,8 @@ const SchemaTraspasos = new Schema(
                 ref:'almacenes'
             },
             nombre: String,
-            concepto: String
+            concepto: String,
+            tipo: String
         },
         almacen_destino: {
             id: {
@@ -31,7 +31,8 @@ const SchemaTraspasos = new Schema(
                 ref:'almacenes'
             },
             nombre: String,
-            concepto: String
+            concepto: String,
+            tipo: String
         },
         productos: [
             {
@@ -41,12 +42,20 @@ const SchemaTraspasos = new Schema(
                 },
                 codigo_barras: String,
                 descripcion: String,
+                cantidad_traspaso: Float,
+                unidad_traspaso: String
             }
         ],
         id_empresa: {
             type: Schema.ObjectId,
             ref:'empresas'
-        }
+        },
+        id_sucursal: {
+            type: Schema.ObjectId,
+            ref:'empresas'
+        },
+        fecha: Date,
+        hora: String,
     },
     {
         timestamps: true

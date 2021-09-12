@@ -50,7 +50,7 @@ const SchemaProducto = new Schema(
             }
         ],
         fecha_creacion: String,
-        numero_mes_creacion: Number,
+        numero_mes_year_creacion: Number,
         year_de_creacion: Number,
         id_empresa: {
             type: Schema.ObjectId,
