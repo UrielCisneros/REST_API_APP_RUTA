@@ -1,6 +1,19 @@
 const usuariosCtrl = {};
 const UsuariosModel = require('../models/usuarios');
 const bcrypt = require('bcrypt-nodejs');
+const ZonaModel = require('../models/zona');
+const { getSucursalPrincipalEmpresa } = require('../middleware/reuser');
+
+
+usuariosCtrl.getUsuario = async (req,res) => {
+    try {
+        const usuarios_empresa = await UsuariosModel.findById(req.params.idUsuario);
+        res.status(200).json(usuarios_empresa);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
 
 usuariosCtrl.getUsuariosEmpresas = async (req,res) => {
     try {
@@ -47,6 +60,95 @@ usuariosCtrl.createUsuario = async (req,res) => {
     }
 }
 
+usuariosCtrl.createCliente = async (req,res) => {
+    try {
+        const {
+            codigo_cliente,
+            nombre,
+            zona,
+            direccion,
+            telefono,
+            status_buro,
+            precio_predeterminado,
+            saldo
+        } = req.body;
 
+        const newCliente = new UsuariosModel({
+            codigo_cliente,
+            nombre,
+            zona,
+            direccion,
+            telefono,
+            status_buro,
+            precio_predeterminado,
+            saldo
+        });
+        await newCliente.save();
+        res.status(200).json({message: "Cliente agregado"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.editCliente = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.createZona = async (req,res) => {
+    try {
+        const {
+            zona,
+            id_usuario
+        } = req.body;
+        const sucursal = await getSucursalPrincipalEmpresa(req.params.idEmpresa);
+        if(!sucursal) res.status(500).json({message: "Error de servidor."});
+        const newZona = new ZonaModel({
+            zona,
+            id_usuario,
+            sucursal: sucursal._id,
+            empresa: req.params.idEmpresa
+        });
+        await newZona.save();
+        res.status(200).json({message: "Zona agregada"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.editZona = async (req,res) => {
+    try {
+        const {
+            zona,
+            id_usuario
+        } = req.body;
+        await ZonaModel.findByIdAndUpdate(req.params.idZona,{zona,id_usuario});
+        res.status(200).json({message: "Zona editada"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.deleteZona = async (req,res) => {
+    try {
+        const zona = await ZonaModel.findById(req.params.idZona);
+        if(zona){
+            await ZonaModel.findByIdAndDelete(req.params.idZona);
+            res.status(200).json({message: "Zona eliminada"});
+        }else{
+            res.status(404).json({message: "La zona no existe"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
 
 module.exports = usuariosCtrl;

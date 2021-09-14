@@ -1,10 +1,13 @@
 const { Router } = require('express');
 const router = Router();
+const auth = require('../middleware/auth');
 
-const { getEmpresas, createEmpresa } = require('../controllers/empresa.controllers');
+const { getEmpresa, createEmpresa, editEmpresa } = require('../controllers/empresa.controllers');
 
-router.route('/obtener').get(getEmpresas);
+router.route('/obtener/:idEmpresa').get(auth,getEmpresa);
 
-router.route('/registrar').post(createEmpresa);
+router.route('/registrar').post(auth,createEmpresa);
+
+router.route('/editar/:idEmpresa').put(auth,editEmpresa);
 
 module.exports = router;

@@ -6,9 +6,9 @@ const SucursalModel = require('../models/sucursal');
 const AlmacenModel = require('../models/almacen');
 
 
-empresaCtrl.getEmpresas = async (req,res) => {
+empresaCtrl.getEmpresa = async (req,res) => {
     try {
-        const empresas = await EmpresaModel.find();
+        const empresas = await EmpresaModel.findById(req.params.idEmpresa);
         res.status(200).json(empresas);
     } catch (error) {
         console.log(error);
@@ -72,6 +72,22 @@ empresaCtrl.createEmpresa = async (req,res) => {
             await almacenPrincipal.save();
             res.status(200).json({message: "Empresa registrada exitosamente."});
         });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+empresaCtrl.editEmpresa = async (req,res) => {
+    try {
+        const {
+            nombre_empresa,
+            direccion
+        } = req.body;
+
+        await EmpresaModel.findByIdAndUpdate(req.params.idEmpresa, {nombre_empresa, direccion});
+
+        res.status(200).json({message: "Empresa editada."});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});

@@ -4,8 +4,19 @@ const {Schema, model} = mongoose;
 
 const UsuariosSchema = new Schema(
     {
+        codigo_cliente: String,
         nombre: String,
-        zona: String,
+        zona: {
+            id: {
+                type: Schema.ObjectId,
+                ref:'zonas' 
+            },
+            nombre_reparidor: String,
+            id_repartidor: {
+                type: Schema.ObjectId,
+                ref:'usuarios'
+            }
+        },
         direccion: {
             calle: String,
             numero: {
@@ -37,6 +48,10 @@ const UsuariosSchema = new Schema(
         empresa: {
             type: Schema.ObjectId,
             ref:'empresas'
+        },
+        sucursal: {
+            type: Schema.ObjectId,
+            ref:'sucursales'
         },
         tipo: String,
         tipo_acceso: String,
