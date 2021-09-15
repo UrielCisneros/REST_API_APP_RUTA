@@ -3,7 +3,18 @@ const UsuariosModel = require('../models/usuarios');
 const bcrypt = require('bcrypt-nodejs');
 const ZonaModel = require('../models/zona');
 const { getSucursalPrincipalEmpresa } = require('../middleware/reuser');
+const uploadFile = require("../middleware/uploadFile");
 
+
+usuariosCtrl.uploadFileAwsS3 = (req, res, next) => {
+	uploadFile.upload(req, res, function (err) {
+		if (err) {
+			res.status(404).json({ message: "Formato de imagen no valido", err });
+		}else{
+            return next();
+        }	
+	});
+};
 
 usuariosCtrl.getUsuario = async (req,res) => {
     try {
@@ -49,11 +60,28 @@ usuariosCtrl.createUsuario = async (req,res) => {
                 telefono,
                 empresa: req.params.idEmpresa,
                 tipo_acceso,
-                password: hash
+                password: hash,
+                tipo: 'Usuario'
             });
             await newUser.save();
             res.status(200).json({message: "Usuario registrado exitosamente."});
         })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.editUsuario = async (req,res) => {
+    try {
+        const {
+            nombre,
+            tipo_acceso,
+            telefono
+        } = req.body;
+        if(!nombre || !tipo_acceso || !telefono) res.status(500).json({message: "Datos incompletos"});
+        await UsuariosModel.findByIdAndUpdate(req.params.idUsuario, {nombre,tipo_acceso,telefono});
+        res.status(200).json({message: "Usuario editado."});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});
@@ -81,7 +109,8 @@ usuariosCtrl.createCliente = async (req,res) => {
             telefono,
             status_buro,
             precio_predeterminado,
-            saldo
+            saldo,
+            tipo: 'Cliente'
         });
         await newCliente.save();
         res.status(200).json({message: "Cliente agregado"});
@@ -93,7 +122,46 @@ usuariosCtrl.createCliente = async (req,res) => {
 
 usuariosCtrl.editCliente = async (req,res) => {
     try {
-        
+        const {
+            nombre,
+            zona,
+            direccion,
+            status_buro,
+            precio_predeterminado,
+            saldo
+        } = req.body;
+        if(!nombre || !zona || !direccion || !status_buro || !precio_predeterminado || !saldo) res.status(500).json({message: "Datos incompletos"});
+        await UsuariosModel.findByIdAndUpdate(req.params.idCliente, {nombre,zona,direccion,status_buro,precio_predeterminado,saldo});
+        res.status(200).json({message: "Cliente editado"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.uploadImagenCliente = async (req,res) => {
+    try {
+        const imagen = req.params.imagenAgregar;
+        const usuario = await UsuariosModel.findById(req.params.idUsuario);
+        let newUsuario = usuario;
+
+        if(imagen === 'delantera' && req.file){
+            if(usuario.imagenes.ine.delantera.key) await uploadFile.eliminarImagen(usuario.imagenes.ine.delantera.key);
+            newUsuario.imagenes.ine.delantera.key = req.file.key;
+            newUsuario.imagenes.ine.delantera.url = req.file.location;
+        }
+        if(imagen === 'trasera' && req.file){
+            if(usuario.imagenes.ine.trasera.key) await uploadFile.eliminarImagen(usuario.imagenes.ine.trasera.key);
+            newUsuario.imagenes.ine.trasera.key = req.file.key;
+            newUsuario.imagenes.ine.trasera.url = req.file.location;
+        }
+        if(imagen === 'fachada' && req.file){
+            if(usuario.imagenes.fachada.key) await uploadFile.eliminarImagen(usuario.imagenes.fachada.key);
+            newUsuario.imagenes.fachada.key = req.file.key;
+            newUsuario.imagenes.fachada.url = req.file.location;
+        }
+        await UsuariosModel.findByIdAndUpdate(req.params.idUsuario, newUsuario);
+        res.status(200).json({message: "Imamgen agregada"});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});
