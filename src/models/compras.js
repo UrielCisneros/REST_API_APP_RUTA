@@ -1,30 +1,65 @@
 const mongoose = require("mongoose");
+var Float = require("mongoose-float").loadType(mongoose, 4);
 const { Schema, model } = mongoose;
 
 const SchemaCompras = new Schema(
     {
-        fecha: Date,
+        usuario: {
+          type: Schema.Types.ObjectId,
+          ref: "usuarios",
+          require: true,
+          trim: true,
+        },
+        almacen: {
+          id_almacen: {
+            type: Schema.Types.ObjectId,
+            require: true,
+            ref: "almacenes",
+            trim: true,
+          },
+          nombre_almacen: String,
+        },
         proveedor: {
-            nombre: String,
-            telefono: String,
-            correo_electronico: String,
-            id: {
-                type: Schema.ObjectId,
-                ref:'proveedores'
+          id_proveedor: {
+            type: Schema.ObjectId,
+            ref: "clientes",
+            require: true,
+            trim: true,
+          },
+          clave_cliente: Number,
+          numero_cliente: Number,
+          nombre_cliente: String,
+        },/* 
+        productos: [
+          {
+            producto: {
+              type: Schema.Types.ObjectId,
+              require: true,
+              ref: "Productos",
+              trim: true,
             },
+          },
+        ], */
+        impuestos: {
+          type: Float,
+          require: true,
         },
-        almacen_destino: {
-            id: {
-                type: Schema.ObjectId,
-                ref:'almacenes'
-            },
-            nombre: String
+        subtotal: {
+          type: Float,
+          require: true,
         },
-        observaciones: String
-    },
-    {
-        timestamps: true
-    }
+        total: {
+          type: Float,
+          require: true,
+        },
+        year_registro: String,
+        numero_semana_year: String,
+        numero_mes_year: String,
+        fecha_registro: String,
+      },
+      {
+        timestamps: true,
+      }
 );
 
 module.exports = model("compras",SchemaCompras);

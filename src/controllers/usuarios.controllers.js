@@ -16,6 +16,7 @@ usuariosCtrl.uploadFileAwsS3 = (req, res, next) => {
 	});
 };
 
+//Usuarios
 usuariosCtrl.getUsuario = async (req,res) => {
     try {
         const usuarios_empresa = await UsuariosModel.findById(req.params.idUsuario);
@@ -88,6 +89,7 @@ usuariosCtrl.editUsuario = async (req,res) => {
     }
 }
 
+//Clientes
 usuariosCtrl.createCliente = async (req,res) => {
     try {
         const {
@@ -161,13 +163,83 @@ usuariosCtrl.uploadImagenCliente = async (req,res) => {
             newUsuario.imagenes.fachada.url = req.file.location;
         }
         await UsuariosModel.findByIdAndUpdate(req.params.idUsuario, newUsuario);
-        res.status(200).json({message: "Imamgen agregada"});
+        res.status(200).json({message: "Imagen agregada"});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Error de registro", error});
     }
 }
 
+//Proveedores
+usuariosCtrl.createProveedores = async (req,res) => {
+    try {
+        const {
+            nombre,
+            direccion,
+            telefono,
+            correo
+        } = req.body;
+        const sucursal = await getSucursalPrincipalEmpresa(req.params.idEmpresa);
+        if(!sucursal){
+            res.status(500).json({message: 'Error de servidor.'})
+            return;
+        }
+        if(!nombre || !direccion || !telefono || !correo){
+            res.status(500).json({message: 'Datos incompletos.'})
+            return;
+        }
+        const newProveedor = new UsuariosModel({
+            nombre,
+            direccion,
+            telefono,
+            correo,
+            tipo: "Proveedor",
+            empresa: req.params.idEmpresa,
+            sucursal: sucursal._id
+        });
+        await newProveedor.save();
+        res.status(200).json({message: "Proveedor agregado."});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+usuariosCtrl.editProveedores = async (req,res) => {
+    try {
+        const {
+            nombre,
+            direccion,
+            telefono, 
+        } = req.body;
+        if(!nombre || !telefono || !direccion || !direccion.calle || !direccion.colonia || !direccion.ciudad || !direccion.codigo_postal){
+            res.status(500).json({message: 'Datos incompletos.'})
+            return;
+        }
+        await UsuariosModel.findByIdAndUpdate(req.params.idProveedor, {nombre, direccion, telefono });
+        res.status(200).json({message: "Proveedor editado."});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error}); 
+    }
+}
+
+usuariosCtrl.deleteProveedores = async (req,res) => {
+    try {
+        const proveedor = await UsuariosModel.findById(req.params.idProveedor);
+        if(proveedor){
+            await UsuariosModel.findByIdAndDelete(req.params.idProveedor);
+            res.status(200).json({message: "Proveedor eliminado."});
+        }else{
+            res.status(500).json({message: "Proveedor no encontrado."});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error de registro", error});
+    }
+}
+
+//Zonas
 usuariosCtrl.createZona = async (req,res) => {
     try {
         const {
